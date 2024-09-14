@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "56467441228",
+    "project_id": "moniman-63c48",
+    "storage_bucket": "moniman-63c48.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56467441228:android:7ce215e74ef85ec44bd6e9",
+        "android_client_info": {
+          "package_name": "app.moniman.pay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "56467441228-duhtplqms14ksbdismr8t0mufthqsh13.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNq0-u-4yw42w_ztPEBO2k_QNwHF-F5Jg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "56467441228-duhtplqms14ksbdismr8t0mufthqsh13.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "56467441228-sj8blb37cnu2pp5f2n6v2v1q0edlv1v6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.moniman.pay"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
