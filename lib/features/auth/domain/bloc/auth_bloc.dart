@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:moniman/features/auth/domain/entities/session.dart';
+import 'package:moniman/features/auth/domain/entities/user.dart';
 import 'package:moniman/features/auth/domain/repositories/auth.dart';
 
 part 'auth_event.dart';
@@ -12,7 +12,7 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
-  late final StreamSubscription<Session?> _authSubscription;
+  late final StreamSubscription<User> _authSubscription;
 
   AuthBloc({
     required this.authRepository,
@@ -30,10 +30,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthStateChangeEvent event,
     Emitter<AuthState> emit,
   ) async {
-    if (event.session != null) {
-      emit(Authenticated(event.session!));
-    } else {
+    if (event.user.isEmpty) {
       emit(Unauthenticated());
+    } else {
+      emit(Authenticated(event.user));
     }
     if (!kIsWeb) {
       await Future.delayed(const Duration(seconds: 1));
@@ -51,9 +51,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
     result.fold(
       (failure) => emit(AuthError(failure.message)),
-      (verificationId) {
-        if (verificationId.isNotEmpty) {
-          emit(AuthOtpSent(verificationId));
+      (result) {
+        if (result is String) {
+          emit(AuthOtpSent(result));
+        } else if (result is User) {
+          emit(Authenticated(result));
         }
       },
     );

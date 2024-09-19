@@ -25,6 +25,10 @@ extension AppRouteExtension on AppRoute {
         return '/onboarding/setup-legal-name';
       case AppRoute.profile:
         return '/profile';
+      case AppRoute.transactionHistory:
+        return '/transaction-history';
+      case AppRoute.accountSettings:
+        return '/account-settings';
     }
   }
 

@@ -17,7 +17,7 @@ class OnboardingStep extends Equatable {
 
   String get path {
     switch (type) {
-      case 'step1':
+      case 'legalName':
         return AppRoute.setupLegalNameOnboardingStep.path;
       default:
         return '';

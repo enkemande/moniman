@@ -18,6 +18,15 @@ class AuthException extends Equatable implements Exception {
   List<Object?> get props => [message];
 }
 
+class UserException extends Equatable implements Exception {
+  final String message;
+
+  const UserException(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class AccountException extends Equatable implements Exception {
   final String message;
 

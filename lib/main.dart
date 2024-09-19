@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:moniman/core/presentation/theme/app_theme.dart';
+import 'package:moniman/features/account/domain/bloc/account_bloc.dart';
 import 'package:moniman/features/auth/domain/bloc/auth_bloc.dart';
 import 'package:moniman/features/deposit/domain/bloc/deposit_bloc.dart';
 import 'package:moniman/features/onboarding/domain/bloc/onboarding_bloc.dart';
-import 'package:moniman/features/transactions/domain/bloc/transactions_bloc.dart';
-import 'package:moniman/features/user/domain/bloc/user_bloc.dart';
+import 'package:moniman/features/transaction_history/domain/bloc/transaction_history_bloc.dart';
 import 'package:moniman/firebase_options.dart';
 import 'package:moniman/router.dart';
 import 'package:moniman/service_locator.dart';
@@ -48,9 +48,9 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => sl<AuthBloc>()),
-        BlocProvider(create: (context) => sl<UserBloc>()),
+        BlocProvider(create: (context) => sl<AccountBloc>()),
         BlocProvider(create: (context) => sl<OnboardingBloc>()),
-        BlocProvider(create: (context) => sl<TransactionsBloc>()),
+        BlocProvider(create: (context) => sl<TransactionHistoryBloc>()),
         BlocProvider(create: (context) => sl<DepositBloc>()),
       ],
       child: MaterialApp.router(

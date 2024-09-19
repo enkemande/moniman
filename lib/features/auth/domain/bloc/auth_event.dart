@@ -8,9 +8,9 @@ sealed class AuthEvent extends Equatable {
 }
 
 class AuthStateChangeEvent extends AuthEvent {
-  final Session? session;
+  final User user;
 
-  const AuthStateChangeEvent(this.session);
+  const AuthStateChangeEvent(this.user);
 
   @override
   List<Object> get props => [];

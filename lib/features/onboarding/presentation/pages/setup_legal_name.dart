@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:moniman/features/onboarding/presentation/widgets/onboarding_guard.dart';
-import 'package:moniman/features/user/presentation/widgets/update_legal_name_form.dart';
 
 class SetupLegalNameOnboardingStepPage extends StatelessWidget {
   const SetupLegalNameOnboardingStepPage({super.key});
@@ -13,12 +12,10 @@ class SetupLegalNameOnboardingStepPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Setup Legal Name'),
         ),
-        body: SafeArea(
+        body: const SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(15),
-            child: UpdateLegalNameForm(
-              actionLabel: 'Next',
-            ),
+            padding: EdgeInsets.all(15),
+            child: SizedBox(width: double.infinity),
           ),
         ),
       ),

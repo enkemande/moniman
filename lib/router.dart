@@ -4,15 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:moniman/core/enums/routes.dart';
 import 'package:moniman/core/extensions/router.dart';
 import 'package:moniman/core/utils/stream_change_notifier.dart';
+import 'package:moniman/features/account/presentation/pages/dashboard.dart';
+import 'package:moniman/features/account/presentation/pages/settings.dart';
 import 'package:moniman/features/auth/domain/bloc/auth_bloc.dart';
 import 'package:moniman/features/auth/presentation/pages/verify_otp.dart';
 import 'package:moniman/features/auth/presentation/pages/verify_phone_number.dart';
-import 'package:moniman/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:moniman/features/deposit/presentation/pages/deposit.dart';
 import 'package:moniman/features/deposit/presentation/pages/deposit_confirmation.dart';
 import 'package:moniman/features/onboarding/presentation/pages/setup_legal_name.dart';
 import 'package:moniman/features/onboarding/presentation/widgets/onboarding_guard.dart';
-import 'package:moniman/features/user/presentation/pages/user_profile.dart';
 import 'package:moniman/service_locator.dart';
 
 class AppRouter {
@@ -26,11 +26,12 @@ class AppRouter {
     AppRoute.depositConfirmation.path,
     AppRoute.withdrawConfirmation.path,
     AppRoute.profile.path,
+    AppRoute.transactionHistory.path,
+    AppRoute.accountSettings.path,
   ];
 
   late final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    // debugLogDiagnostics: true,
     initialLocation: AppRoute.dashboard.path,
     refreshListenable: StreamChangeNotifier([sl<AuthBloc>().stream]),
     redirect: (context, state) {
@@ -114,16 +115,16 @@ class AppRouter {
               GoRoute(
                 name: AppRoute.dashboard.name,
                 path: AppRoute.dashboard.path,
-                builder: (context, state) => const DashboardPage(),
+                builder: (context, state) => const AccountDashboardPage(),
               ),
             ],
           ),
           StatefulShellBranch(
             routes: [
               GoRoute(
-                name: AppRoute.profile.name,
-                path: AppRoute.profile.path,
-                builder: (context, state) => const UserProfilePage(),
+                name: AppRoute.accountSettings.name,
+                path: AppRoute.accountSettings.path,
+                builder: (context, state) => const AccountSettingsPage(),
               ),
             ],
           ),

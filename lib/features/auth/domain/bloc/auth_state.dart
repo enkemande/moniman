@@ -21,12 +21,12 @@ final class AuthOtpSent extends AuthState {
 }
 
 final class Authenticated extends AuthState {
-  final Session session;
+  final User user;
 
-  const Authenticated(this.session);
+  const Authenticated(this.user);
 
   @override
-  List<Object> get props => [session];
+  List<Object> get props => [user];
 }
 
 final class Unauthenticated extends AuthState {}

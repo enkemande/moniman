@@ -10,4 +10,6 @@ enum AppRoute {
   payment,
   paymentConfirmation,
   profile,
+  transactionHistory,
+  accountSettings,
 }

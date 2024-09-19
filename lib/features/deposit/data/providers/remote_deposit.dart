@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:moniman/core/errors/exceptions.dart';
-import 'package:moniman/features/user/data/models/user.dart';
+import 'package:moniman/core/utils/aes_encryption.dart';
+import 'package:moniman/core/utils/rsa_encryption.dart';
+import 'package:moniman/core/utils/secure_storage.dart';
 
 abstract class RemoteDepositProvider {
   Future<void> deposit({
@@ -12,6 +14,15 @@ abstract class RemoteDepositProvider {
 
 class RemoteDepositProviderImpl implements RemoteDepositProvider {
   final _firestore = FirebaseFirestore.instance;
+  final RsaEncryption rsaEncryption;
+  final SecureStorage secureStorage;
+  final AesEncryption aesEncryption;
+
+  RemoteDepositProviderImpl({
+    required this.rsaEncryption,
+    required this.secureStorage,
+    required this.aesEncryption,
+  });
 
   @override
   Future<void> deposit({
@@ -19,37 +30,59 @@ class RemoteDepositProviderImpl implements RemoteDepositProvider {
     required String paymentMethodId,
     required int amount,
   }) async {
-    final userRef = _firestore.collection('users').doc(userId);
-    final transactionRef =
-        _firestore.doc(userId).collection('transactions').doc();
+    final accountRef = _firestore.collection('accounts').doc(userId);
+    final transactionRef = _firestore.collection('transactions').doc();
 
     try {
-      if (amount <= 0) throw 'Amount must be greater than 0!';
       await _firestore.runTransaction((transaction) async {
-        final userDoc = await transaction.get(userRef);
-        if (!userDoc.exists) throw "User does not exist!";
-        final user = UserModel.fromDocSnapshot(userDoc);
+        final privateKey = await secureStorage.getPrivateKey();
+        final publicKey = await secureStorage.getPublicKey();
 
-        if (user.status != 'active') throw "User is not active!";
-        final newBalance = user.balance + amount;
+        final accountDoc = await transaction.get(accountRef);
+        if (!accountDoc.exists) throw "User does not exist!";
+        final account = accountDoc.data() as Map<String, dynamic>;
 
-        transaction.update(userRef, {
-          'balance': newBalance,
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
+        final decryptedBalance = int.parse(
+          rsaEncryption.decryptMessage(
+            account['encryptedBalance'],
+            rsaEncryption.parsePrivateKeyFromPem(privateKey),
+          ),
+        );
 
-        // process payment here
+        final newBalance = decryptedBalance + amount;
+        final encryptedBalance = rsaEncryption.encryptMessage(
+          newBalance.toString(),
+          rsaEncryption.parsePublicKeyFromPem(publicKey),
+        );
+
+        final transactionEncryptionKey = aesEncryption.generateRandomKey();
+
+        final encryptedAmount = aesEncryption.encryptMessage(
+          amount.toString(),
+          transactionEncryptionKey,
+        );
+
+        final encryptedTransactionDecryptKey = rsaEncryption.encryptMessage(
+          transactionEncryptionKey.base64,
+          rsaEncryption.parsePublicKeyFromPem(publicKey),
+        );
+
+        // process payment
 
         transaction.set(transactionRef, {
-          'userId': userId,
-          'paymentMethodId': paymentMethodId,
-          'amount': amount,
+          'sourceId': userId,
+          'encryptedAmount': encryptedAmount,
+          'decryptKey': encryptedTransactionDecryptKey,
           'type': 'deposit',
-          'status': 'completed',
           'title': 'Deposit',
-          'description': 'Deposit to account',
-          'currency': user.currency,
+          'status': 'completed',
+          'currency': account['currency'],
+          'participantUserIds': [userId],
           'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        transaction.update(accountRef, {
+          'encryptedBalance': encryptedBalance,
         });
       });
     } on FirebaseException catch (error) {

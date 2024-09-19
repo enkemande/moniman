@@ -25,7 +25,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     _authSubscription = authBloc.stream.listen((authState) {
       if (authState is Authenticated) {
         _onboardingStepsSubscription = onboardingRepository
-            .onStepsChange(authState.session.uid!)
+            .onStepsChange(authState.user.uid)
             .listen((steps) => add(OnboardingChangedEvent(steps)));
       }
     });
@@ -46,10 +46,9 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     Emitter<OnboardingState> emit,
   ) async {
     if (authBloc.state is Authenticated) {
-      final userId = (authBloc.state as Authenticated).session.uid;
       final result = await onboardingRepository.completeStep(
         type: event.type,
-        userId: userId!,
+        userId: (authBloc.state as Authenticated).user.uid,
       );
       result.fold(
         (failure) => emit(OnboardingStepsError(failure.message)),
@@ -63,10 +62,9 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     Emitter<OnboardingState> emit,
   ) async {
     if (authBloc.state is Authenticated) {
-      final userId = (authBloc.state as Authenticated).session.uid;
       final result = await onboardingRepository.skipStep(
         type: event.type,
-        userId: userId!,
+        userId: (authBloc.state as Authenticated).user.uid,
       );
       result.fold(
         (failure) => emit(OnboardingStepsError(failure.message)),

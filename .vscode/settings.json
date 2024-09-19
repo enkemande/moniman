@@ -1,5 +1,13 @@
 {
-  "cSpell.words": ["autofocus", "dartz", "Firestore", "moniman"],
+  "cSpell.words": [
+    "autofocus",
+    "cupertino",
+    "dartz",
+    "encrypter",
+    "Firestore",
+    "moniman",
+    "pointycastle"
+  ],
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit",
     "source.fixAll.eslint": "explicit"

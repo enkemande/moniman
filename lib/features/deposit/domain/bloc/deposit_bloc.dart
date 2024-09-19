@@ -23,17 +23,16 @@ class DepositBloc extends Bloc<DepositEvent, DepositState> {
   ) async {
     if (authBloc.state is Authenticated) {
       emit(DepositLoading());
+      final authState = authBloc.state as Authenticated;
       final result = await depositRepository.deposit(
         amount: event.amount,
-        userId: (authBloc.state as Authenticated).session.uid!,
+        userId: authState.user.uid,
         paymentMethodId: event.paymentMethodId,
       );
       result.fold(
         (failure) => emit(DepositError(failure.message)),
         (_) => emit(DepositSuccess()),
       );
-    } else {
-      emit(const DepositError('User is not authenticated'));
     }
   }
 }
